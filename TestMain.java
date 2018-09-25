@@ -83,10 +83,44 @@ public class TestMain {
         return tests;
     }
 
-    public static Map loadTestData(String testDataFile) {
+    public static String createTest(String left, String operator, String righ) {
+        switch (operator) {
+            case "=": 
+                         return "Asssert.AssertEqulas";
+            case ">": 
+                         break;
+            case "<": 
+                         break;
+            case ">=": 
+                         break;
+            case "<=": 
+                         break;
+            case "is": 
+                         break;
+            case "not is": 
+                         break;
+            case "exception": 
+                         break;
+        }
+    }
+    
+    public static List<String> loadTestData(String testDataFile) {
         System.out.println("Loading " + testDataFile + "------");
 
-        return null;
+	List<String> tests = new ArrayList<>();
+	Reader in = new FileReader(testDataFile);
+	Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+	for (CSVRecord record : records) {
+    		String leftSide = record.get("left side");
+                String relation= record.get("relation");
+    		String rightSide = record.get("right side");
+                String name = record.get("name");
+                String comments = record.get("comments");
+		String test = createTest(leftSide, relation, rightSide);
+		System.out.println(test);
+		tests.add(System.lineSeparator() + "@Test" + System.lineSeparator() + "public void " + name + "() {"System.lineSeparator() + test + System.lineSeparator() + "}");
+	}
+        return tests;
     }
 
     public static void main(String[] args) {
