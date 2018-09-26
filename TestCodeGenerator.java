@@ -21,7 +21,7 @@ public final class TestCodeGenerator {
  public static final String RIGHT_OP = "right side";
  public static final String OP = "comprator";
  public List < String > loadTestDataCSV(String testDataFile) throws IOException {
-  System.out.println("Loading " + testDataFile + "------");
+  //System.out.println("Loading " + testDataFile + "------");
 
   List < String > tests = new ArrayList < > ();
   Reader in = new FileReader(testDataFile);
@@ -77,9 +77,11 @@ public final class TestCodeGenerator {
   String line = bf.readLine();
   String pieces[] = line.split(" "); //TODO 
   String preTest = "import org.junit.Test;" + System.lineSeparator() + "import org.junit.Assert;" + System.lineSeparator() + "import " + pieces[0] + ";";
+  String[] classNameParts = pieces[0].split("\\.");
+  preTest += System.lineSeparator() + "public final class " + classNameParts[classNameParts.length - 1] + "Test {";
   System.out.println(preTest);
   while ((line = bf.readLine()) != null) {
-   if (line.startsWith("//")) {
+   if (line.startsWith("//") || line.trim().length() == 0) {
     continue;
    }
    String[] parts = line.split(DEL);
@@ -92,6 +94,7 @@ public final class TestCodeGenerator {
    System.out.println(newTest);
    tests.add(newTest);
   }
+  System.out.println("}"); //post test
   return tests;
  }
 

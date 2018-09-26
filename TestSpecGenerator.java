@@ -22,7 +22,7 @@ public final class TestSpecGenerator {
  public static final String OP = "comprator";
  public List < Constructor > getCallableConstructors(Class klass) {
   List < Constructor > callables = new ArrayList < > ();
-  Constructor[] makers = klass.getConstructors();
+  Constructor[] makers = klass.getDeclaredConstructors();
   for (int i = 0; i < makers.length; i++) {
    if (Modifier.isPublic(makers[i].getModifiers())) {
     callables.add(makers[i]);
@@ -30,6 +30,7 @@ public final class TestSpecGenerator {
   }
   return callables;
  }
+
  public List < String > getContext(Method m) {
   String klass = m.getDeclaringClass().getSimpleName();
   List < String > list = new ArrayList < > ();
@@ -40,14 +41,29 @@ public final class TestSpecGenerator {
 
   List < Constructor > makers = getCallableConstructors(m.getDeclaringClass());
   for (Constructor c: makers) {
-   list.add(c.getName());
-   System.out.println("KKKKKKK" + c.getParameters().length);
+   String call = "new "+ klass + "(";
+   for (int i = 0; i < c.getParameterTypes().length; i++) {
+     if (i > 0) {
+       call += ',';
+     }
+     call += c.getParameterTypes()[i].getSimpleName();
+   }
+   call += ")";
+   list.add(call); 
   }
   return list; //TTODO getConstructors
  }
 
- public String createTestSpec(Method m) {
-  String res = getContext(m) + "." + m.getName() + "(";
+ public List<String> createTestSpec(Method m) {
+  List<String> tests = new ArrayList<>();
+  for (String c : getContext(m)) {
+    tests.add(createTestSpec(m, c)); 
+  }
+  return tests;	
+ }
+
+ public String createTestSpec(Method m, String caller) {
+  String res = caller + "." + m.getName() + "(";
   for (int i = 0; i < m.getParameterCount(); i++) {
    if (i > 0) {
     res = res + ",";
@@ -59,8 +75,8 @@ public final class TestSpecGenerator {
   return res;
  }
 
- public Map < Method, String > createSkeleton(Class klass) {
-  Map < Method, String > tests = new HashMap < > ();
+ public Map < Method, List<String> > createSkeleton(Class klass) {
+  Map < Method, List<String> > tests = new HashMap < > ();
   System.out.println(klass.getName() + " -------");
   for (Method m: klass.getDeclaredMethods()) {
    if (isTestable(m)) {
@@ -69,6 +85,7 @@ public final class TestSpecGenerator {
   }
   return tests;
  }
+
  public boolean isTestable(Method m) {
   if (Modifier.isPublic(m.getModifiers()) &&
    !Modifier.isAbstract(m.getModifiers()) &&

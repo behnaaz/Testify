@@ -10,8 +10,7 @@ Generating tests
 
 TODOs:
 Support for expect exception
-add class info
 add test name and comments
 complete operator mapping
-complete constructor detection
 consider builders
+add beforetest and aftertest methods
