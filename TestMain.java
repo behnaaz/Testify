@@ -1,4 +1,6 @@
 import java.io.InputStream;
+import java.util.List;
+import java.util.ArrayList;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
@@ -6,6 +8,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.FileReader;
+import java.io.Reader;
+import org.apache.commons.csv.CSVRecord;
 
 public class TestMain {
     public static void usage() {
@@ -53,7 +58,9 @@ public class TestMain {
     }
 
     public static boolean isTestable(Method m) {
-        if (Modifier.isPublic(m.getModifiers()) && (m.getReturnType() != Void.TYPE)) {//  || m.getExceptionTypes() != null)) {//TODO test
+        if (Modifier.isPublic(m.getModifiers()) &&
+                ! Modifier.isAbstract(m.getModifiers()) &&
+                (m.getReturnType() != Void.TYPE)) {//  || m.getExceptionTypes() != null)) {//TODO test
             return true;
         }
         return false;
@@ -118,7 +125,7 @@ public class TestMain {
                 String comments = record.get("comments");
 		String test = createTest(leftSide, relation, rightSide);
 		System.out.println(test);
-		tests.add(System.lineSeparator() + "@Test" + System.lineSeparator() + "public void " + name + "() {"System.lineSeparator() + test + System.lineSeparator() + "}");
+		tests.add(System.lineSeparator() + "@Test" + System.lineSeparator() + "public void " + name + "() {" + System.lineSeparator() + test + System.lineSeparator() + "}");
 	}
         return tests;
     }
