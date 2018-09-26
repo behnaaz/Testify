@@ -9,10 +9,20 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.Reader;
+import java.io.IOException;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.csv.CSVFormat;
 
 public class TestMain {
+    public static final String DEL = "@";
+    public static final String LEFT_OP = "left side";
+    public static final String RIGHT_OP = "right side";
+    public static final String OP = "comprator";
+
+    public int nonStatic() { return 1; }
+
     public static void usage() {
         String programName = TestMain.class.getName();
         System.out.println("USAGE:" + programName + " " + "FileName without any suffix" + "-c");
@@ -66,15 +76,23 @@ public class TestMain {
         return false;
     }
 
-    public static String createTest(Method m) {
-        String res = m.getName()+"(";
+    public static String getContext(Method m) {
+        String klass = m.getDeclaringClass().getSimpleName();
+        if (Modifier.isStatic(m.getModifiers())) {
+            return klass; 
+        }
+        return "new "+klass+"()"; //TTODO getConstructors
+    }
+
+    public static String createTestSpec(Method m) {
+        String res = getContext(m)+"."+m.getName()+"(";
         for (int i = 0; i < m.getParameterCount(); i++) {
             if (i > 0) {
                 res = res + ",";
             }
             res += m.getParameters()[i].getType().getSimpleName();
         }
-        res += ") = " + m.getReturnType().getSimpleName();
+        res += ")" + DEL + "=" + DEL + m.getReturnType().getSimpleName();
         System.out.println(res);
         return res;
     }
@@ -84,13 +102,13 @@ public class TestMain {
         System.out.println(klass.getSimpleName() + " -------");
         for (Method m : klass.getDeclaredMethods()) {
             if (isTestable(m)) {
-                tests.put(m, createTest(m));
+                tests.put(m, createTestSpec(m));
             }
         }
         return tests;
     }
 
-    public static String createTest(String left, String operator, String righ) {
+    public static String mapOperator(String operator) {
         switch (operator) {
             case "=": 
                          return "Asssert.AssertEqulas";
@@ -109,21 +127,51 @@ public class TestMain {
             case "exception": 
                          break;
         }
+	return null;
     }
-    
-    public static List<String> loadTestData(String testDataFile) {
-        System.out.println("Loading " + testDataFile + "------");
+
+     public static List<String> loadTestData(String testDataFile) throws IOException {
+        System.out.println("Loading " + testDataFile + "------" );
 
 	List<String> tests = new ArrayList<>();
 	Reader in = new FileReader(testDataFile);
-	Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
+        BufferedReader bf = new BufferedReader(in);
+
+        String name = "test";
+        int counter = 1;
+        String line = bf.readLine();//Title 
+	while ((line = bf.readLine()) != null) {
+		String[] parts = line.split(DEL);
+    		String leftSide = parts[0];
+                String relation= parts[1];
+    		String rightSide = parts[2];
+                String comments = "comments"; //parts[4];
+		String test = createTestCode(leftSide, relation, rightSide);
+		String newTest = System.lineSeparator() + "    @Test" + System.lineSeparator() + "    public void " + name + counter++ + "() {" + System.lineSeparator() + "        " + test + System.lineSeparator() + "    }";
+		System.out.println(newTest);
+		tests.add(newTest);
+	}
+        return tests;
+    }
+
+    public static String createTestCode(String actual, String operator, String expected) {
+        return mapOperator(operator) + "(" + actual + "," + expected + ");";
+    }
+
+    public static List<String> loadTestDataCSV(String testDataFile) throws IOException {
+        System.out.println("Loading " + testDataFile + "------" );
+
+	List<String> tests = new ArrayList<>();
+	Reader in = new FileReader(testDataFile);
+
+	Iterable<CSVRecord> records = CSVFormat.EXCEL/*.withDelimiter(DEL)*/.parse(in);
 	for (CSVRecord record : records) {
-    		String leftSide = record.get("left side");
-                String relation= record.get("relation");
-    		String rightSide = record.get("right side");
+    		String leftSide = record.get(LEFT_OP);
+                String relation= record.get(OP);
+    		String rightSide = record.get(RIGHT_OP);
                 String name = record.get("name");
                 String comments = record.get("comments");
-		String test = createTest(leftSide, relation, rightSide);
+		String test = createTestCode(leftSide, relation, rightSide);
 		System.out.println(test);
 		tests.add(System.lineSeparator() + "@Test" + System.lineSeparator() + "public void " + name + "() {" + System.lineSeparator() + test + System.lineSeparator() + "}");
 	}
@@ -151,7 +199,11 @@ public class TestMain {
         }
 
         if (args.length > 2 && "-l".equals(args[1])) {
-            loadTestData(args[2]);
+            try {
+                loadTestData(args[2]);
+            } catch (IOException ex) {
+                 ex.printStackTrace();
+            }
             return;
         }
 

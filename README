@@ -1,0 +1,10 @@
+Compile:
+javac -cp .:./commons-csv-1.6.jar  TestMain.java
+
+Run:
+Creating test skleton to be edited by human
+	 java TestMain classpath:ClassToGenerateTestFor -c
+
+Generating tests
+	java TestMain classpath:TestMain -l test_skeleton_file
+
