@@ -8,3 +8,9 @@ Creating test skleton to be edited by human
 Generating tests
 	java TestMain classpath:TestMain -l test_skeleton_file
 
+TODOs:
+Support for expect exception
+add class info
+add test name and comments
+complete operator mapping
+complete constructor detection
