@@ -57,6 +57,7 @@ public final class TestSpecGenerator {
  public List<String> createTestSpec(Method m) {
   List<String> tests = new ArrayList<>();
   for (String c : getContext(m)) {
+    System.out.println("//--------------");
     tests.add(createTestSpec(m, c)); 
   }
   return tests;	
@@ -72,6 +73,7 @@ public final class TestSpecGenerator {
   }
   res += ")" + DEL + "=" + DEL + m.getReturnType().getSimpleName();
   System.out.println(res);
+  System.out.println();
   return res;
  }
 

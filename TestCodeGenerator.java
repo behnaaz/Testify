@@ -43,6 +43,8 @@ public final class TestCodeGenerator {
   switch (operator) {
    case "=":
     return "Assert.assertEquals";
+   case "!=":
+    return "Assert.assertNotEquals";
    case ">":
     break;
    case "<":
@@ -51,10 +53,10 @@ public final class TestCodeGenerator {
     break;
    case "<=":
     break;
-   case "is":
-    break;
-   case "not is":
-    break;
+   case "null":
+    return "Assert.assertNull";
+   case "!null":
+    return "Assert.assertNotNull";
    case "exception":
     break;
   }
@@ -62,7 +64,11 @@ public final class TestCodeGenerator {
  }
 
  public String createTestCode(String actual, String operator, String expected) {
-  return mapOperator(operator) + "(" + actual + "," + expected + ");";
+  String res = mapOperator(operator) + "(" + actual;
+  if (! "null".equals(operator) && ! "!null".equals(operator)) {
+   res += "," + expected;
+  }
+  return res + ");";
  }
 
  public List < String > loadTestData(String testDataFile) throws IOException {
