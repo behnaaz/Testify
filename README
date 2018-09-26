@@ -1,3 +1,13 @@
+Unit test (stub) generator.
+
+
+Running with -c aruments:
+The testable methods are extracted from the given class and based on them a test spec file is generated
+User can edit the file by passing the desired parameter values for method invocations or expected values, comments out tests or add more spec
+
+Running with -l parameter
+The test spec are read and stub tests are created
+
 Compile:
 javac -cp .:./commons-csv-1.6.jar  TestMain.java
 
