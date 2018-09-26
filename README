@@ -14,3 +14,4 @@ add class info
 add test name and comments
 complete operator mapping
 complete constructor detection
+consider builders
