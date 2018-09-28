@@ -13,9 +13,8 @@ javac -cp .:./commons-csv-1.6.jar  TestMain.java
 
 Run:
 Creating test skleton to be edited by human
-	 java TestMain classpath:ClassToGenerateTestFor -c
-OR
-	 java TestMain path_to_ClassToGenerateTestFor -c
+	 java TestMain path_to_jar classToBeTested -c
+	 java TestMain path_to_Classes classTobeBeTested -c
 
 Generating tests
 	java TestMain -l test_skeleton_file

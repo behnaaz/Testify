@@ -14,22 +14,16 @@ public class TestMain {
   return separator;
  }
 
- public static Class loadClass(final String klassName) throws ClassNotFoundException, MalformedURLException {
-  ClassLoader classLoader;
+ public static Class loadClass(final String path, final String klassName) throws ClassNotFoundException, MalformedURLException {
+  URL[] urls = new URL[]{ new URL(path.startsWith("file:")?path:("file:"+path)) };
+  ClassLoader classLoader = new URLClassLoader(urls);
   Class result;
-  String refindName = klassName;
-  if (klassName.startsWith("classpath:")) {
-   refindName = klassName.substring(10);
-   classLoader = TestMain.class.getClassLoader();
-   result = classLoader.loadClass(refindName);
-  } else {
-   URL url = new URL("file://" + refindName);
-   classLoader = new URLClassLoader(new URL[] { url });
-   String fileName = getFileName(url.getFile());
-   //  System.out.println("Loading " + fileName + " with " + classLoader);
-   result = classLoader.loadClass(fileName);
-  }
-  return result;
+  // URL url = new URL("file://" + klassName);
+   //classLoader = new URLClassLoader(new URL[] { url });//, Thread.currentThread().getContextClassLoader());
+   //String fileName = getFileName(klassName);
+   System.out.println("Loading " + klassName + " with " + classLoader);
+   result = classLoader.loadClass(klassName);
+   return result;
  }
 
  public static String getFileName(String filePath) {
@@ -68,7 +62,9 @@ public static void main(String[] args) {
   
   Class c = null;
   try {
-   c = loadClass(args[0]);
+    //  URL url = new URL("file://" + klassName);
+    //  classLoader = new URLClassLoader(new URL[] { url });//, Thread.currentThread().getContextClassLoader());
+      c = loadClass(args[0], args[1]);
   } catch (ClassNotFoundException | MalformedURLException ex) {
    System.out.println("Could not find " + args[0]);
    ex.printStackTrace();
