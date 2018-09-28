@@ -19,9 +19,9 @@ comments
     Assert.assertEquals(TestMain.class, TestMain.loadClass("C:/Users/Max/Desktop/Testify", "testify.TestMain"));
         Assert.assertNotEquals(TestMain.class, TestMain.loadClass("C:/Users/Max/Desktop/A/A.jar", "A"));
         Assert.assertNotEquals(TestMain.class, TestMain.loadClass("C:/Projects/rabo/payment-data-service/app/target/app.jar", "org.springframework.boot.loader.Launcher"));
-
-        Assert.assertNotEquals(TestMain.class, TestMain.loadClass("C:/Projects/rabo/payment-data-service/app/target/classes/", "nl.rabobank.online.paymentssavings.data.service.mapper.CurrencyMapper"));
 */
+        Assert.assertNotEquals(TestMain.class, TestMain.loadClass("C:/Projects/rabo/payment-data-service/app/target/classes/", "nl.rabobank.online.paymentssavings.data.service.mapper.CurrencyMapper"));
+
 }
 
 /***

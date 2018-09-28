@@ -16,13 +16,14 @@ public class TestMain {
 
  public static Class loadClass(final String path, final String klassName) throws ClassNotFoundException, MalformedURLException {
   URL[] urls = new URL[]{ new URL(path.startsWith("file:")?path:("file:"+path)) };
-  ClassLoader classLoader = new URLClassLoader(urls);
+  ClassLoader classLoader = new URLClassLoader(urls);//TODO investigate resource leak
   Class result;
   // URL url = new URL("file://" + klassName);
    //classLoader = new URLClassLoader(new URL[] { url });//, Thread.currentThread().getContextClassLoader());
    //String fileName = getFileName(klassName);
-   System.out.println("Loading " + klassName + " with " + classLoader);
+   //System.out.println("Loading " + klassName + " with " + classLoader);
    result = classLoader.loadClass(klassName);
+   classLoader = null;
    return result;
  }
 
@@ -36,10 +37,10 @@ public class TestMain {
 
  public static void usage() {
   String programName = TestMain.class.getName();
-  System.out.println("USAGE:" + programName + " " + "FileName without any suffix" + "-c");
+  System.out.println("USAGE:" + programName + " -c path class");
   System.out.println("    creates the skeleton");
 
-  System.out.println("USAGE:" + programName + " " + "FileName without any suffix" + "-l testdata file");
+  System.out.println("USAGE:" + programName + " -l test_data_file");
   System.out.println("    load test data");
 
   System.out.println("Comment a line in test spec file with //");
@@ -59,21 +60,18 @@ public static void main(String[] args) {
       }
       return;
      }
-  
-  Class c = null;
-  try {
-    //  URL url = new URL("file://" + klassName);
-    //  classLoader = new URLClassLoader(new URL[] { url });//, Thread.currentThread().getContextClassLoader());
-      c = loadClass(args[0], args[1]);
-  } catch (ClassNotFoundException | MalformedURLException ex) {
-   System.out.println("Could not find " + args[0]);
-   ex.printStackTrace();
-   return;
-  }
 
-  if (args.length > 1 && "-c".equals(args[1])) {
-   new TestSpecGenerator().createSkeleton(c);
-   return;
+  if (args.length > 2 && "-c".equals(args[0])) {
+     Class c = null;
+     try {
+           c = loadClass(args[1], args[2]);
+     } catch (ClassNotFoundException | MalformedURLException ex) {
+           System.out.println("Could not find " + args[0]);
+           ex.printStackTrace();
+     return;
+    }
+    new TestSpecGenerator().createSkeleton(c);
+    return;
   }
 
   usage();
