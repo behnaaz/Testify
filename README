@@ -19,6 +19,7 @@ Generating tests
 	java TestMain classpath:TestMain -l test_skeleton_file
 
 TODOs:
+make java -jar 
 Support for expect exception
 add test name and comments
 complete operator mapping
