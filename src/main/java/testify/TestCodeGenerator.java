@@ -1,20 +1,14 @@
-import java.io.InputStream;
-import java.util.List;
-import java.util.ArrayList;
-import java.lang.reflect.Method;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.HashMap;
-import java.util.Map;
-import java.io.FileReader;
+package testify;
 import java.io.BufferedReader;
-import java.io.Reader;
+import java.io.FileReader;
 import java.io.IOException;
-import org.apache.commons.csv.CSVRecord;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
+
 public final class TestCodeGenerator {
  public static final String DEL = "@";
  public static final String LEFT_OP = "left side";
@@ -35,10 +29,15 @@ public final class TestCodeGenerator {
    String comments = record.get("comments");
    String test = createTestCode(leftSide, relation, rightSide);
    System.out.println(test);
-   tests.add(System.lineSeparator() + "@Test" + System.lineSeparator() + "public void " + name + "() {" + System.lineSeparator() + test + System.lineSeparator() + "}");
+   tests.add(createComments(comments) + "@Test" + System.lineSeparator() + "public void " + name + "() {" + System.lineSeparator() + test + System.lineSeparator() + "}");
   }
   return tests;
  }
+ 
+ public String createComments(final String comments) {
+     return System.lineSeparator() + "/***" + System.lineSeparator() + comments + System.lineSeparator() + "**/" + System.lineSeparator();
+ }
+ 
  public String mapOperator(String operator) {
   switch (operator) {
    case "=":
@@ -90,13 +89,14 @@ public final class TestCodeGenerator {
    if (line.startsWith("//") || line.trim().length() == 0) {
     continue;
    }
+   bf.close();
    String[] parts = line.split(DEL);
    String leftSide = parts[0];
    String relation = parts[1];
    String rightSide = parts[2];
    String comments = "comments"; //parts[4];
    String test = createTestCode(leftSide, relation, rightSide);
-   String newTest = System.lineSeparator() + "    @Test" + System.lineSeparator() + "    public void " + name + counter++ + "() {" + System.lineSeparator() + "        " + test + System.lineSeparator() + "    }";
+   String newTest = createComments(comments) + "@Test" + System.lineSeparator() + "    public void " + name + counter++ + "() {" + System.lineSeparator() + "        " + test + System.lineSeparator() + "    }";
    System.out.println(newTest);
    tests.add(newTest);
   }

@@ -1,27 +1,20 @@
-import java.io.InputStream;
-import java.util.List;
+package testify;
 import java.util.ArrayList;
 import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.Reader;
-import java.io.IOException;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.csv.CSVFormat;
+
+@SuppressWarnings("rawtypes")
 public final class TestSpecGenerator {
  public static final String DEL = "@";
  public static final String LEFT_OP = "left side";
  public static final String RIGHT_OP = "right side";
  public static final String OP = "comprator";
  public List < Constructor > getCallableConstructors(Class klass) {
-  List < Constructor > callables = new ArrayList < > ();
+List < Constructor > callables = new ArrayList < > ();
   Constructor[] makers = klass.getDeclaredConstructors();
   for (int i = 0; i < makers.length; i++) {
    if (Modifier.isPublic(makers[i].getModifiers())) {

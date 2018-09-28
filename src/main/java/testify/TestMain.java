@@ -1,21 +1,10 @@
-import java.io.InputStream;
-import java.util.List;
-import java.util.ArrayList;
-import java.lang.reflect.Method;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
+package testify;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.HashMap;
-import java.util.Map;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.Reader;
-import java.io.IOException;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.commons.csv.CSVFormat;
 
+@SuppressWarnings("rawtypes")
 public class TestMain {
  public static String findSplitter(final String name) {
   String separator = System.getProperty("file.separator");
@@ -26,20 +15,21 @@ public class TestMain {
  }
 
  public static Class loadClass(final String klassName) throws ClassNotFoundException, MalformedURLException {
-  ClassLoader classLoader = TestMain.class.getClassLoader();
+  ClassLoader classLoader;
+  Class result;
   String refindName = klassName;
   if (klassName.startsWith("classpath:")) {
    refindName = klassName.substring(10);
-   return classLoader.loadClass(refindName);
+   classLoader = TestMain.class.getClassLoader();
+   result = classLoader.loadClass(refindName);
   } else {
    URL url = new URL("file://" + refindName);
-   classLoader = new URLClassLoader(new URL[] {
-    url
-   });
+   classLoader = new URLClassLoader(new URL[] { url });
    String fileName = getFileName(url.getFile());
    //  System.out.println("Loading " + fileName + " with " + classLoader);
-   return classLoader.loadClass(fileName);
+   result = classLoader.loadClass(fileName);
   }
+  return result;
  }
 
  public static String getFileName(String filePath) {
@@ -61,9 +51,7 @@ public class TestMain {
   System.out.println("Comment a line in test spec file with //");
  }
 
-
-
- public static void main(String[] args) {
+public static void main(String[] args) {
   if (args.length == 0) {
    usage();
    return;
