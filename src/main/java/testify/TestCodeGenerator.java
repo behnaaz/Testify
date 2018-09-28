@@ -6,21 +6,22 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
+//import org.apache.commons.csv.CSVFormat;
+//import org.apache.commons.csv.CSVRecord;
 
 public final class TestCodeGenerator {
  public static final String DEL = "@";
  public static final String LEFT_OP = "left side";
  public static final String RIGHT_OP = "right side";
  public static final String OP = "comprator";
+ /*
  public List < String > loadTestDataCSV(String testDataFile) throws IOException {
   //System.out.println("Loading " + testDataFile + "------");
 
   List < String > tests = new ArrayList < > ();
   Reader in = new FileReader(testDataFile);
 
-  Iterable < CSVRecord > records = CSVFormat.EXCEL /*.withDelimiter(DEL)*/ .parse( in );
+  Iterable < CSVRecord > records = CSVFormat.EXCEL /*.withDelimiter(DEL) * / .parse( in );
   for (CSVRecord record: records) {
    String leftSide = record.get(LEFT_OP);
    String relation = record.get(OP);
@@ -32,7 +33,7 @@ public final class TestCodeGenerator {
    tests.add(createComments(comments) + "@Test" + System.lineSeparator() + "public void " + name + "() {" + System.lineSeparator() + test + System.lineSeparator() + "}");
   }
   return tests;
- }
+ }*/
  
  public String createComments(final String comments) {
      return System.lineSeparator() + "/***" + System.lineSeparator() + comments + System.lineSeparator() + "**/" + System.lineSeparator();
@@ -63,9 +64,9 @@ public final class TestCodeGenerator {
  }
 
  public String createTestCode(String actual, String operator, String expected) {
-  String res = mapOperator(operator) + "(" + actual;
+  String res = mapOperator(operator) + "(" + expected ;
   if (! "null".equals(operator) && ! "!null".equals(operator)) {
-   res += "," + expected;
+   res += "," + actual;
   }
   return res + ");";
  }
@@ -89,7 +90,6 @@ public final class TestCodeGenerator {
    if (line.startsWith("//") || line.trim().length() == 0) {
     continue;
    }
-   bf.close();
    String[] parts = line.split(DEL);
    String leftSide = parts[0];
    String relation = parts[1];
@@ -100,6 +100,7 @@ public final class TestCodeGenerator {
    System.out.println(newTest);
    tests.add(newTest);
   }
+  bf.close();
   System.out.println("}"); //post test
   return tests;
  }

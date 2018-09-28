@@ -57,6 +57,15 @@ public static void main(String[] args) {
    return;
   }
 
+  if (args.length > 1 && "-l".equals(args[0])) {
+      try {
+       new TestCodeGenerator().loadTestData(args[1]);
+      } catch (IOException ex) {
+       ex.printStackTrace();
+      }
+      return;
+     }
+  
   Class c = null;
   try {
    c = loadClass(args[0]);
@@ -68,15 +77,6 @@ public static void main(String[] args) {
 
   if (args.length > 1 && "-c".equals(args[1])) {
    new TestSpecGenerator().createSkeleton(c);
-   return;
-  }
-
-  if (args.length > 2 && "-l".equals(args[1])) {
-   try {
-    new TestCodeGenerator().loadTestData(args[2]);
-   } catch (IOException ex) {
-    ex.printStackTrace();
-   }
    return;
   }
 
