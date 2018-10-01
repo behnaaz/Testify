@@ -21,7 +21,7 @@ Generating tests
 
 TODOs:
 make java -jar 
-Support for expect exception
+Support for expect exception @Test(expected = Exception.class)
 add test name and comments
 complete operator mapping
 consider builders
