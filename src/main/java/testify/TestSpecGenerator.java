@@ -3,6 +3,9 @@ import java.util.ArrayList;
 import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +26,36 @@ List < Constructor > callables = new ArrayList < > ();
   }
   return callables;
  }
+
+ public Class loadClass(final String path, final String klassName) throws ClassNotFoundException, MalformedURLException {
+  URL[] urls = new URL[]{ new URL(path.startsWith("file:")?path:("file:"+path)) };
+  @SuppressWarnings("resource")
+ClassLoader classLoader = new URLClassLoader(urls);//TODO investigate resource leak
+  Class result;
+  // URL url = new URL("file://" + klassName);
+   //classLoader = new URLClassLoader(new URL[] { url });//, Thread.currentThread().getContextClassLoader());
+   //String fileName = getFileName(klassName);
+   //System.out.println("Loading " + klassName + " with " + classLoader);
+   result = classLoader.loadClass(klassName);
+   classLoader = null;
+   return result;
+ }
+
+ public String getFileName(String filePath) {
+  String[] fileNamePieces = filePath.split(findSplitter(filePath));
+  String toBeRefinedName = fileNamePieces[fileNamePieces.length - 1];
+  int lastIndex = Math.max(toBeRefinedName.lastIndexOf("\\"), toBeRefinedName.lastIndexOf("/")) + 1;
+  //   System.out.println("File name is : " + toBeRefinedName.substring(lastIndex));
+  return toBeRefinedName.substring(lastIndex);
+ }
+
+public String findSplitter(final String name) {
+String separator = System.getProperty("file.separator");
+if ("\\".equals(separator)) {
+return "\\\\";
+}
+return separator;
+}
 
  public List < String > getContext(Method m) {
   String klass = m.getDeclaringClass().getSimpleName();

@@ -20,7 +20,7 @@ comments
         Assert.assertNotEquals(TestMain.class, TestMain.loadClass("C:/Users/Max/Desktop/A/A.jar", "A"));
         Assert.assertNotEquals(TestMain.class, TestMain.loadClass("C:/Projects/rabo/payment-data-service/app/target/app.jar", "org.springframework.boot.loader.Launcher"));
 */
-        Assert.assertNotEquals(TestMain.class, TestMain.loadClass("C:/Projects/rabo/payment-data-service/app/target/classes/", "nl.rabobank.online.paymentssavings.data.service.mapper.CurrencyMapper"));
+        Assert.assertNotEquals(TestMain.class, new TestSpecGenerator().loadClass("C:/Projects/rabo/payment-data-service/app/target/classes/", "nl.rabobank.online.paymentssavings.data.service.mapper.CurrencyMapper"));
 
 }
 
@@ -29,7 +29,7 @@ comments
 **/
 @Test
     public void test2() {
-        Assert.assertEquals("d.txt", TestMain.getFileName("c://a/b/c/d.txt"));
+        Assert.assertEquals("d.txt", new TestSpecGenerator().getFileName("c://a/b/c/d.txt"));
     }
 
 /***
@@ -37,6 +37,6 @@ comments
 **/
 @Test
     public void test3() {
-        Assert.assertEquals("\\\\", TestMain.findSplitter("C:\\abc\\d.txt"));
+        Assert.assertEquals("\\\\", new TestSpecGenerator().findSplitter("C:\\abc\\d.txt"));
     }
 }
