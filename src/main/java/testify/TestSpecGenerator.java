@@ -77,6 +77,8 @@ return separator;
    call += ")";
    list.add(call); 
   }
+  if (list.isEmpty())
+     return Collections.singletonList("builder //TODO needs builder");
   return list; //TTODO getConstructors
  }
 
