@@ -36,7 +36,7 @@ public static void main(String[] args) {
      try {
            c = generator.loadClass(args[1], args[2]);
      } catch (ClassNotFoundException | MalformedURLException ex) {
-           System.out.println("Could not find " + args[0]);
+           System.out.println("Make sure the path to jar file containing the class is correct and the class has the full namespace in its name");
            ex.printStackTrace();
      return;
     }
