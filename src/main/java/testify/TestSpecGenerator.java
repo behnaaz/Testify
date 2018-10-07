@@ -9,6 +9,7 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 @SuppressWarnings("rawtypes")
 public final class TestSpecGenerator {
@@ -23,6 +24,9 @@ List < Constructor > callables = new ArrayList < > ();
    if (Modifier.isPublic(makers[i].getModifiers())) {
     callables.add(makers[i]);
    }
+  }
+  if (TestMain.debug) {
+     System.out.println(callables.size() + " callable constructor(s) found!");
   }
   return callables;
  }
@@ -45,7 +49,9 @@ ClassLoader classLoader = new URLClassLoader(urls);//TODO investigate resource l
   String[] fileNamePieces = filePath.split(findSplitter(filePath));
   String toBeRefinedName = fileNamePieces[fileNamePieces.length - 1];
   int lastIndex = Math.max(toBeRefinedName.lastIndexOf("\\"), toBeRefinedName.lastIndexOf("/")) + 1;
-  //   System.out.println("File name is : " + toBeRefinedName.substring(lastIndex));
+  if (TestMain.debug) {
+    System.out.println("File name is : " + toBeRefinedName.substring(lastIndex));
+  }
   return toBeRefinedName.substring(lastIndex);
  }
 
@@ -58,6 +64,9 @@ return separator;
 }
 
  public List < String > getContext(Method m) {
+  if (TestMain.debug) {
+    System.out.println("Finding invoker context for " + m);
+  }
   String klass = m.getDeclaringClass().getSimpleName();
   List < String > list = new ArrayList < > ();
   if (Modifier.isStatic(m.getModifiers())) {
@@ -77,8 +86,9 @@ return separator;
    call += ")";
    list.add(call); 
   }
-  if (list.isEmpty())
+  if (list.isEmpty()) {
      return Collections.singletonList("builder //TODO needs builder");
+  }
   return list; //TTODO getConstructors
  }
 
@@ -109,6 +119,9 @@ return separator;
   Map < Method, List<String> > tests = new HashMap < > ();
   System.out.println(klass.getName() + " -------");
   for (Method m: klass.getDeclaredMethods()) {
+   if (TestMain.debug) {
+     System.out.println("Checking method " + m);
+   }
    if (isTestable(m)) {
     tests.put(m, createTestSpec(m));
    }

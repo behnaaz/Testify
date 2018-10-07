@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 
 @SuppressWarnings("rawtypes")
 public class TestMain {
+ static boolean debug = false;
  public static void usage() {
   String programName = TestMain.class.getName();
   System.out.println("USAGE:" + programName + " -c path class");
@@ -29,7 +30,7 @@ public static void main(String[] args) {
       }
       return;
      }
-
+  debug = ("-d".equals(args[args.length - 1]));
   if (args.length > 2 && "-c".equals(args[0])) {
      TestSpecGenerator generator = new TestSpecGenerator();
      Class c = null;
